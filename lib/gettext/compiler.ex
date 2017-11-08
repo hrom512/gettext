@@ -76,7 +76,7 @@ defmodule Gettext.Compiler do
 
       defmacro gettext_noop(msgid) do
         quote do
-          unquote(__MODULE__).dgettext_noop("default", unquote(msgid))
+          unquote(__MODULE__).dgettext_noop(unquote(@default_domain), unquote(msgid))
         end
       end
 
@@ -94,7 +94,7 @@ defmodule Gettext.Compiler do
 
       defmacro ngettext_noop(msgid, msgid_plural) do
         quote do
-          unquote(__MODULE__).dngettext_noop("default", unquote(msgid), unquote(msgid_plural))
+          unquote(__MODULE__).dngettext_noop(unquote(@default_domain), unquote(msgid), unquote(msgid_plural))
         end
       end
 
@@ -107,7 +107,7 @@ defmodule Gettext.Compiler do
 
       defmacro gettext(msgid, bindings \\ Macro.escape(%{})) do
         quote do
-          unquote(__MODULE__).dgettext("default", unquote(msgid), unquote(bindings))
+          unquote(__MODULE__).dgettext(unquote(@default_domain), unquote(msgid), unquote(bindings))
         end
       end
 
@@ -130,7 +130,7 @@ defmodule Gettext.Compiler do
       defmacro ngettext(msgid, msgid_plural, n, bindings \\ Macro.escape(%{})) do
         quote do
           unquote(__MODULE__).dngettext(
-            "default",
+            unquote(@default_domain),
             unquote(msgid),
             unquote(msgid_plural),
             unquote(n),
