@@ -19,6 +19,10 @@ defmodule GettextTest.TranslatorWithCustomPluralForms do
   use Gettext, otp_app: :test_application, plural_forms: Plural
 end
 
+defmodule GettextTest.TranslatorWithCustomDefaultDomain do
+  use Gettext, otp_app: :test_application, default_domain: "custom"
+end
+
 defmodule GettextTest do
   use ExUnit.Case
 
@@ -27,8 +31,10 @@ defmodule GettextTest do
   alias GettextTest.Translator
   alias GettextTest.TranslatorWithCustomPriv
   alias GettextTest.TranslatorWithCustomPluralForms
+  alias GettextTest.TranslatorWithCustomDefaultDomain
   require Translator
   require TranslatorWithCustomPriv
+  require TranslatorWithCustomDefaultDomain
 
   test "the default locale is \"en\"" do
     assert Gettext.get_locale() == "en"
@@ -499,5 +505,23 @@ defmodule GettextTest do
       assert lgettext("pt_BR", "nonexistent", "Hello world", %{}) ==
              {:default, "Hello world"}
     end
+  end
+
+  test "using a custom default domain" do
+    alias TranslatorWithCustomDefaultDomain, as: T
+
+    Gettext.put_locale T, "it"
+
+    assert T.gettext("Hello world!!!") == "Ciao mondo!!!"
+    assert T.gettext("Hello %{name}!!!", %{name: "Jane"}) == "Ciao Jane!!!"
+
+    assert T.ngettext("One new email!!!", "%{count} new emails!!!", 1) == "Una nuova email!!!"
+    assert T.ngettext("One new email!!!", "%{count} new emails!!!", 2) == "2 nuove email!!!"
+
+    assert T.dgettext("default", "Hello world") == "Ciao mondo"
+    assert T.dgettext("default", "Hello %{name}", %{name: "Jane"}) == "Hello Jane"
+
+    assert T.dngettext("default", "One new email", "%{count} new emails", 1) == "Una nuova email"
+    assert T.dngettext("default", "One new email", "%{count} new emails", 2) == "2 nuove email"
   end
 end
