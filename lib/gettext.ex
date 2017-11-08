@@ -506,6 +506,7 @@ defmodule Gettext do
   @type bindings :: %{} | Keyword.t
 
   @default_domain "default"
+  @domain_prefix ""
 
   @doc false
   defmacro __using__(opts) do
@@ -514,6 +515,8 @@ defmodule Gettext do
 
       @gettext_opts unquote(opts)
       @default_domain unquote(opts[:default_domain] || "default")
+      @domain_prefix unquote(opts[:domain_prefix] || "")
+
       @before_compile Gettext.Compiler
 
       def handle_missing_bindings(exception, incomplete) do
@@ -666,6 +669,7 @@ defmodule Gettext do
   def dgettext(backend, domain, msgid, bindings)
       when is_atom(backend) and is_binary(domain) and is_binary(msgid) and is_map(bindings) do
     locale = get_locale(backend)
+    domain = "#{@domain_prefix}#{domain}"
     result = backend.lgettext(locale, domain, msgid, bindings)
     handle_backend_result(result, backend, locale, domain, msgid)
   end
@@ -720,6 +724,7 @@ defmodule Gettext do
            is_binary(msgid_plural) and is_integer(n) and n >= 0 and
            is_map(bindings) do
     locale = get_locale(backend)
+    domain = "#{@domain_prefix}#{domain}"
     result = backend.lngettext(locale, domain, msgid, msgid_plural, n, bindings)
     handle_backend_result(result, backend, locale, domain, msgid)
   end

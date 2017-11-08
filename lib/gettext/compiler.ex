@@ -99,6 +99,8 @@ defmodule Gettext.Compiler do
       end
 
       defmacro dgettext(domain, msgid, bindings \\ Macro.escape(%{})) do
+        domain = Gettext.Compiler.expand_to_binary(domain, "domain", __MODULE__, __CALLER__)
+        domain = "#{@domain_prefix}#{domain}"
         quote do
           msgid = unquote(__MODULE__).dgettext_noop(unquote(domain), unquote(msgid))
           Gettext.dgettext(unquote(__MODULE__), unquote(domain), msgid, unquote(bindings))
@@ -112,6 +114,8 @@ defmodule Gettext.Compiler do
       end
 
       defmacro dngettext(domain, msgid, msgid_plural, n, bindings \\ Macro.escape(%{})) do
+        domain = Gettext.Compiler.expand_to_binary(domain, "domain", __MODULE__, __CALLER__)
+        domain = "#{@domain_prefix}#{domain}"
         quote do
           {msgid, msgid_plural} =
             unquote(__MODULE__).dngettext_noop(unquote(domain), unquote(msgid), unquote(msgid_plural))
