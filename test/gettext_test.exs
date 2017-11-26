@@ -507,7 +507,7 @@ defmodule GettextTest do
     end
   end
 
-  test "using domain prefix" do
+  test "using domain prefix with macroses" do
     alias TranslatorWithDomainPrefix, as: T
 
     Gettext.put_locale T, "it"
@@ -522,5 +522,22 @@ defmodule GettextTest do
 
     assert T.dngettext("errors", "There was an error!", "There were %{count} errors!", 1) == "C'è stato un errore!"
     assert T.dngettext("errors", "There was an error!", "There were %{count} errors!", 2) == "Ci sono stati 2 errori!"
+  end
+
+  test "using domain prefix with module functions" do
+    alias TranslatorWithDomainPrefix, as: T
+
+    Gettext.put_locale T, "it"
+
+    assert Gettext.gettext(T, "Hello world!") == "Ciao mondo!"
+    assert Gettext.gettext(T, "Hello %{name}!", %{name: "Jane"}) == "Ciao Jane!"
+
+    assert Gettext.ngettext(T, "One new email!", "%{count} new emails!", 1) == "Una nuova email!"
+    assert Gettext.ngettext(T, "One new email!", "%{count} new emails!", 2) == "2 nuove email!"
+
+    assert Gettext.dgettext(T, "errors", "Invalid email address!") == "Indirizzo email non valido!"
+
+    assert Gettext.dngettext(T, "errors", "There was an error!", "There were %{count} errors!", 1) == "C'è stato un errore!"
+    assert Gettext.dngettext(T, "errors", "There was an error!", "There were %{count} errors!", 2) == "Ci sono stati 2 errori!"
   end
 end
