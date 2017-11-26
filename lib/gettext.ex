@@ -506,7 +506,6 @@ defmodule Gettext do
   @type bindings :: %{} | Keyword.t
 
   @default_domain "default"
-  @domain_prefix ""
 
   @doc false
   defmacro __using__(opts) do
@@ -514,11 +513,9 @@ defmodule Gettext do
       require Logger
 
       @gettext_opts unquote(opts)
-
       @default_domain "default"
-      @domain_prefix unquote(opts[:domain_prefix] || "")
 
-      def domain_prefix, do: @domain_prefix
+      def domain_prefix, do: unquote(opts[:domain_prefix] || "")
 
       @before_compile Gettext.Compiler
 
