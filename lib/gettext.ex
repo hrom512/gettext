@@ -514,7 +514,8 @@ defmodule Gettext do
       require Logger
 
       @gettext_opts unquote(opts)
-      @default_domain unquote(opts[:default_domain] || "default")
+
+      @default_domain "default"
       @domain_prefix unquote(opts[:domain_prefix] || "")
 
       @before_compile Gettext.Compiler
